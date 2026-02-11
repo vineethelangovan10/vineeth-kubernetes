@@ -1,1 +1,4 @@
 project_id = "lqlxxoiecjqzvhzcueda"
+
+[functions.manage-cluster]
+verify_jwt = false
