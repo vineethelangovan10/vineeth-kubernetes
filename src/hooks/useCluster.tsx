@@ -36,6 +36,19 @@ const ClusterContext = createContext<ClusterContextType>({
   refreshClusters: async () => {},
 });
 
+async function callManageCluster(action: string, payload: Record<string, unknown>) {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) throw new Error("Not authenticated");
+
+  const res = await supabase.functions.invoke("manage-cluster", {
+    body: { action, ...payload },
+  });
+
+  if (res.error) throw new Error(res.error.message);
+  if (res.data?.error) throw new Error(res.data.error);
+  return res.data;
+}
+
 export function ClusterProvider({ children }: { children: ReactNode }) {
   const { user } = useAuth();
   const [clusters, setClusters] = useState<Cluster[]>([]);
@@ -44,12 +57,12 @@ export function ClusterProvider({ children }: { children: ReactNode }) {
 
   const fetchClusters = async () => {
     if (!user) { setClusters([]); setLoading(false); return; }
-    const { data, error } = await supabase
-      .from("clusters")
-      .select("id, name, server_url, is_active, status, created_at")
-      .order("created_at", { ascending: true });
-    if (error) { console.error(error); return; }
-    setClusters(data || []);
+    const { data, error } = await supabase.rpc("get_user_clusters");
+    if (error) {
+      toast({ title: "Error loading clusters", description: "Unable to fetch cluster data. Please try again.", variant: "destructive" });
+      return;
+    }
+    setClusters((data as Cluster[]) || []);
     setLoading(false);
   };
 
@@ -58,30 +71,32 @@ export function ClusterProvider({ children }: { children: ReactNode }) {
   const activeCluster = clusters.find((c) => c.is_active) || null;
 
   const switchCluster = async (id: string) => {
-    // Deactivate all, then activate selected
-    await supabase.from("clusters").update({ is_active: false }).eq("user_id", user!.id);
-    await supabase.from("clusters").update({ is_active: true }).eq("id", id);
-    await fetchClusters();
+    try {
+      await callManageCluster("switch", { id });
+      await fetchClusters();
+    } catch (e: any) {
+      toast({ title: "Error", description: e.message, variant: "destructive" });
+    }
   };
 
   const addCluster = async (name: string, kubeconfig: string) => {
-    const isFirst = clusters.length === 0;
-    const { error } = await supabase.from("clusters").insert({
-      user_id: user!.id,
-      name,
-      kubeconfig,
-      is_active: isFirst,
-      status: "connected",
-    });
-    if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
-    toast({ title: "Cluster added", description: `${name} has been connected.` });
-    await fetchClusters();
+    try {
+      await callManageCluster("add", { name, kubeconfig });
+      toast({ title: "Cluster added", description: `${name} has been connected.` });
+      await fetchClusters();
+    } catch (e: any) {
+      toast({ title: "Error", description: e.message, variant: "destructive" });
+    }
   };
 
   const removeCluster = async (id: string) => {
-    await supabase.from("clusters").delete().eq("id", id);
-    toast({ title: "Cluster removed" });
-    await fetchClusters();
+    try {
+      await callManageCluster("remove", { id });
+      toast({ title: "Cluster removed" });
+      await fetchClusters();
+    } catch (e: any) {
+      toast({ title: "Error", description: e.message, variant: "destructive" });
+    }
   };
 
   return (
