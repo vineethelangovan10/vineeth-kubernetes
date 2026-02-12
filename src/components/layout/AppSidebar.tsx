@@ -27,6 +27,7 @@ import {
   Timer,
   Boxes,
   Container,
+  ScrollText,
 } from "lucide-react";
 
 const navGroups = [
@@ -34,6 +35,7 @@ const navGroups = [
     label: "Overview",
     items: [
       { title: "Cluster Overview", url: "/", icon: LayoutDashboard },
+      { title: "Logs", url: "/logs", icon: ScrollText },
     ],
   },
   {

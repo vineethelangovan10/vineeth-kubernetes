@@ -2,3 +2,6 @@ project_id = "lqlxxoiecjqzvhzcueda"
 
 [functions.manage-cluster]
 verify_jwt = false
+
+[functions.k8s-chat]
+verify_jwt = false
