@@ -18,17 +18,23 @@ export default function Logs() {
   const [search, setSearch] = useState("");
   const [levelFilter, setLevelFilter] = useState<string>("all");
   const [namespaceFilter, setNamespaceFilter] = useState<string>("all");
+  const [podFilter, setPodFilter] = useState<string>("all");
 
   const namespaces = useMemo(() => [...new Set(mockLogs.map((l) => l.namespace))], []);
+  const pods = useMemo(() => {
+    const filtered = namespaceFilter !== "all" ? mockLogs.filter((l) => l.namespace === namespaceFilter) : mockLogs;
+    return [...new Set(filtered.map((l) => l.pod))];
+  }, [namespaceFilter]);
 
   const filtered = useMemo(() => {
     return mockLogs.filter((log) => {
       if (levelFilter !== "all" && log.level !== levelFilter) return false;
       if (namespaceFilter !== "all" && log.namespace !== namespaceFilter) return false;
+      if (podFilter !== "all" && log.pod !== podFilter) return false;
       if (search && !log.message.toLowerCase().includes(search.toLowerCase()) && !log.pod.toLowerCase().includes(search.toLowerCase())) return false;
       return true;
     });
-  }, [search, levelFilter, namespaceFilter]);
+  }, [search, levelFilter, namespaceFilter, podFilter]);
 
   return (
     <div className="space-y-4">
@@ -52,7 +58,7 @@ export default function Logs() {
             <SelectItem value="debug">Debug</SelectItem>
           </SelectContent>
         </Select>
-        <Select value={namespaceFilter} onValueChange={setNamespaceFilter}>
+        <Select value={namespaceFilter} onValueChange={(v) => { setNamespaceFilter(v); setPodFilter("all"); }}>
           <SelectTrigger className="w-[150px]"><SelectValue placeholder="Namespace" /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Namespaces</SelectItem>
@@ -61,7 +67,18 @@ export default function Logs() {
             ))}
           </SelectContent>
         </Select>
-        <Button variant="outline" size="icon" onClick={() => { setSearch(""); setLevelFilter("all"); setNamespaceFilter("all"); }}>
+        <Select value={podFilter} onValueChange={setPodFilter}>
+          <SelectTrigger className="w-[280px]"><SelectValue placeholder="Pod" /></SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Pods</SelectItem>
+            {pods.map((pod) => (
+              <SelectItem key={pod} value={pod}>
+                <span className="font-mono text-xs">{pod}</span>
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+        <Button variant="outline" size="icon" onClick={() => { setSearch(""); setLevelFilter("all"); setNamespaceFilter("all"); setPodFilter("all"); }}>
           <RotateCcw className="h-4 w-4" />
         </Button>
       </div>
