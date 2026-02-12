@@ -9,6 +9,7 @@ import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import Auth from "@/pages/Auth";
 import ClusterOverview from "@/pages/ClusterOverview";
 import Pods from "@/pages/Pods";
+import Logs from "@/pages/Logs";
 import Deployments from "@/pages/Deployments";
 import StatefulSets from "@/pages/StatefulSets";
 import DaemonSets from "@/pages/DaemonSets";
@@ -55,6 +56,7 @@ const App = () => (
           <Routes>
             <Route path="/auth" element={<AuthRoute />} />
             <Route path="/" element={<ProtectedRoute><ClusterOverview /></ProtectedRoute>} />
+            <Route path="/logs" element={<ProtectedRoute><Logs /></ProtectedRoute>} />
             <Route path="/pods" element={<ProtectedRoute><Pods /></ProtectedRoute>} />
             <Route path="/deployments" element={<ProtectedRoute><Deployments /></ProtectedRoute>} />
             <Route path="/statefulsets" element={<ProtectedRoute><StatefulSets /></ProtectedRoute>} />
