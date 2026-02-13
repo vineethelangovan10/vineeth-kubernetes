@@ -14,6 +14,89 @@ export type Database = {
   }
   public: {
     Tables: {
+      ado_connections: {
+        Row: {
+          created_at: string
+          id: string
+          is_active: boolean
+          organization: string
+          pat: string
+          projects: string[]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          organization: string
+          pat: string
+          projects?: string[]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          organization?: string
+          pat?: string
+          projects?: string[]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      ado_scan_results: {
+        Row: {
+          connection_id: string
+          created_at: string
+          id: string
+          project_name: string
+          recommendations: Json
+          repository_name: string
+          scan_type: string
+          severity_summary: Json
+          status: string
+          user_id: string
+          vulnerabilities: Json
+        }
+        Insert: {
+          connection_id: string
+          created_at?: string
+          id?: string
+          project_name: string
+          recommendations?: Json
+          repository_name: string
+          scan_type: string
+          severity_summary?: Json
+          status?: string
+          user_id: string
+          vulnerabilities?: Json
+        }
+        Update: {
+          connection_id?: string
+          created_at?: string
+          id?: string
+          project_name?: string
+          recommendations?: Json
+          repository_name?: string
+          scan_type?: string
+          severity_summary?: Json
+          status?: string
+          user_id?: string
+          vulnerabilities?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ado_scan_results_connection_id_fkey"
+            columns: ["connection_id"]
+            isOneToOne: false
+            referencedRelation: "ado_connections"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       clusters: {
         Row: {
           created_at: string

@@ -28,6 +28,10 @@ import {
   Boxes,
   Container,
   ScrollText,
+  GitBranch,
+  Settings,
+  ScanLine,
+  Play,
 } from "lucide-react";
 
 const navGroups = [
@@ -75,6 +79,15 @@ const navGroups = [
     label: "Access Control",
     items: [
       { title: "Roles & Bindings", url: "/rbac", icon: Shield },
+    ],
+  },
+  {
+    label: "Azure DevOps",
+    items: [
+      { title: "ADO Settings", url: "/ado/settings", icon: Settings },
+      { title: "Repositories", url: "/ado/repositories", icon: GitBranch },
+      { title: "Pipelines", url: "/ado/pipelines", icon: Play },
+      { title: "Scan Reports", url: "/ado/reports", icon: ScanLine },
     ],
   },
 ];

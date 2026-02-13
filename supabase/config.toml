@@ -5,3 +5,9 @@ verify_jwt = false
 
 [functions.k8s-chat]
 verify_jwt = false
+
+[functions.ado-proxy]
+verify_jwt = false
+
+[functions.ado-scan]
+verify_jwt = false
