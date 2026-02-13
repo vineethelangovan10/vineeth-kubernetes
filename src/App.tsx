@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/hooks/useAuth";
 import { ClusterProvider } from "@/hooks/useCluster";
+import { AdoProvider } from "@/hooks/useAdo";
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import Auth from "@/pages/Auth";
 import ClusterOverview from "@/pages/ClusterOverview";
@@ -24,6 +25,10 @@ import Secrets from "@/pages/Secrets";
 import Storage from "@/pages/Storage";
 import RBAC from "@/pages/RBAC";
 import AddCluster from "@/pages/AddCluster";
+import AdoSettings from "@/pages/AdoSettings";
+import AdoRepositories from "@/pages/AdoRepositories";
+import AdoPipelines from "@/pages/AdoPipelines";
+import AdoScanReports from "@/pages/AdoScanReports";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -34,7 +39,9 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
   if (!user) return <Navigate to="/auth" replace />;
   return (
     <ClusterProvider>
-      <DashboardLayout>{children}</DashboardLayout>
+      <AdoProvider>
+        <DashboardLayout>{children}</DashboardLayout>
+      </AdoProvider>
     </ClusterProvider>
   );
 }
@@ -72,6 +79,10 @@ const App = () => (
             <Route path="/storage" element={<ProtectedRoute><Storage /></ProtectedRoute>} />
             <Route path="/rbac" element={<ProtectedRoute><RBAC /></ProtectedRoute>} />
             <Route path="/clusters/add" element={<ProtectedRoute><AddCluster /></ProtectedRoute>} />
+            <Route path="/ado/settings" element={<ProtectedRoute><AdoSettings /></ProtectedRoute>} />
+            <Route path="/ado/repositories" element={<ProtectedRoute><AdoRepositories /></ProtectedRoute>} />
+            <Route path="/ado/pipelines" element={<ProtectedRoute><AdoPipelines /></ProtectedRoute>} />
+            <Route path="/ado/reports" element={<ProtectedRoute><AdoScanReports /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
