@@ -18,12 +18,12 @@ serve(async (req) => {
     const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // Verify user
     const anonClient = createClient(supabaseUrl, Deno.env.get("SUPABASE_ANON_KEY")!);
     const { data: { user }, error: authError } = await anonClient.auth.getUser(authHeader.replace("Bearer ", ""));
     if (authError || !user) throw new Error("Unauthorized");
 
-    const { action, connectionId, project, repository, buildId, path } = await req.json();
+    const body = await req.json();
+    const { action, connectionId, project, repository, buildId, path, branch, releaseId, top } = body;
 
     // Get connection PAT
     const { data: conn, error: connErr } = await supabase
@@ -41,6 +41,7 @@ serve(async (req) => {
       "Content-Type": "application/json",
     };
     const baseUrl = `https://dev.azure.com/${org}`;
+    const vsrmUrl = `https://vsrm.dev.azure.com/${org}`;
 
     let result: any;
 
@@ -57,9 +58,19 @@ serve(async (req) => {
         result = await resp.json();
         break;
       }
-      case "get_file_tree": {
+      case "list_branches": {
         const resp = await fetch(
-          `${baseUrl}/${project}/_apis/git/repositories/${repository}/items?recursionLevel=Full&api-version=7.1`,
+          `${baseUrl}/${project}/_apis/git/repositories/${repository}/refs?filter=heads/&api-version=7.1`,
+          { headers: adoHeaders }
+        );
+        if (!resp.ok) throw new Error(`ADO API error: ${resp.status}`);
+        result = await resp.json();
+        break;
+      }
+      case "get_file_tree": {
+        const versionParam = branch ? `&versionDescriptor.version=${encodeURIComponent(branch)}&versionDescriptor.versionType=branch` : "";
+        const resp = await fetch(
+          `${baseUrl}/${project}/_apis/git/repositories/${repository}/items?recursionLevel=Full&api-version=7.1${versionParam}`,
           { headers: adoHeaders }
         );
         if (!resp.ok) throw new Error(`ADO API error: ${resp.status}`);
@@ -67,8 +78,9 @@ serve(async (req) => {
         break;
       }
       case "get_file_content": {
+        const versionParam = branch ? `&versionDescriptor.version=${encodeURIComponent(branch)}&versionDescriptor.versionType=branch` : "";
         const resp = await fetch(
-          `${baseUrl}/${project}/_apis/git/repositories/${repository}/items?path=${encodeURIComponent(path)}&api-version=7.1`,
+          `${baseUrl}/${project}/_apis/git/repositories/${repository}/items?path=${encodeURIComponent(path)}&api-version=7.1${versionParam}`,
           { headers: { ...adoHeaders, Accept: "text/plain" } }
         );
         if (!resp.ok) throw new Error(`ADO API error: ${resp.status}`);
@@ -85,8 +97,9 @@ serve(async (req) => {
         break;
       }
       case "list_builds": {
+        const topParam = top || 20;
         const resp = await fetch(
-          `${baseUrl}/${project}/_apis/build/builds?$top=20&api-version=7.1`,
+          `${baseUrl}/${project}/_apis/build/builds?$top=${topParam}&api-version=7.1`,
           { headers: adoHeaders }
         );
         if (!resp.ok) throw new Error(`ADO API error: ${resp.status}`);
@@ -103,9 +116,9 @@ serve(async (req) => {
         break;
       }
       case "get_build_log_content": {
-        const { logId } = await req.json().catch(() => ({}));
+        const logId = body.logId || path;
         const resp = await fetch(
-          `${baseUrl}/${project}/_apis/build/builds/${buildId}/logs/${path}?api-version=7.1`,
+          `${baseUrl}/${project}/_apis/build/builds/${buildId}/logs/${logId}?api-version=7.1`,
           { headers: { ...adoHeaders, Accept: "text/plain" } }
         );
         if (!resp.ok) throw new Error(`ADO API error: ${resp.status}`);
@@ -115,6 +128,44 @@ serve(async (req) => {
       case "get_build_timeline": {
         const resp = await fetch(
           `${baseUrl}/${project}/_apis/build/builds/${buildId}/timeline?api-version=7.1`,
+          { headers: adoHeaders }
+        );
+        if (!resp.ok) throw new Error(`ADO API error: ${resp.status}`);
+        result = await resp.json();
+        break;
+      }
+      case "get_build_changes": {
+        const resp = await fetch(
+          `${baseUrl}/${project}/_apis/build/builds/${buildId}/changes?$top=5&api-version=7.1`,
+          { headers: adoHeaders }
+        );
+        if (!resp.ok) throw new Error(`ADO API error: ${resp.status}`);
+        result = await resp.json();
+        break;
+      }
+      // ---- Release Management (Classic) ----
+      case "list_releases": {
+        const topParam = top || 20;
+        const resp = await fetch(
+          `${vsrmUrl}/${project}/_apis/release/releases?$top=${topParam}&$expand=environments,artifacts&api-version=7.1`,
+          { headers: adoHeaders }
+        );
+        if (!resp.ok) throw new Error(`ADO API error: ${resp.status} ${await resp.text()}`);
+        result = await resp.json();
+        break;
+      }
+      case "get_release": {
+        const resp = await fetch(
+          `${vsrmUrl}/${project}/_apis/release/releases/${releaseId}?api-version=7.1`,
+          { headers: adoHeaders }
+        );
+        if (!resp.ok) throw new Error(`ADO API error: ${resp.status}`);
+        result = await resp.json();
+        break;
+      }
+      case "list_release_definitions": {
+        const resp = await fetch(
+          `${vsrmUrl}/${project}/_apis/release/definitions?api-version=7.1`,
           { headers: adoHeaders }
         );
         if (!resp.ok) throw new Error(`ADO API error: ${resp.status}`);
