@@ -29,6 +29,7 @@ import AdoSettings from "@/pages/AdoSettings";
 import AdoRepositories from "@/pages/AdoRepositories";
 import AdoPipelines from "@/pages/AdoPipelines";
 import AdoScanReports from "@/pages/AdoScanReports";
+import AdoReleases from "@/pages/AdoReleases";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -82,6 +83,7 @@ const App = () => (
             <Route path="/ado/settings" element={<ProtectedRoute><AdoSettings /></ProtectedRoute>} />
             <Route path="/ado/repositories" element={<ProtectedRoute><AdoRepositories /></ProtectedRoute>} />
             <Route path="/ado/pipelines" element={<ProtectedRoute><AdoPipelines /></ProtectedRoute>} />
+            <Route path="/ado/releases" element={<ProtectedRoute><AdoReleases /></ProtectedRoute>} />
             <Route path="/ado/reports" element={<ProtectedRoute><AdoScanReports /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>

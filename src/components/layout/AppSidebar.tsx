@@ -32,6 +32,7 @@ import {
   Settings,
   ScanLine,
   Play,
+  Rocket,
 } from "lucide-react";
 
 const navGroups = [
@@ -87,6 +88,7 @@ const navGroups = [
       { title: "ADO Settings", url: "/ado/settings", icon: Settings },
       { title: "Repositories", url: "/ado/repositories", icon: GitBranch },
       { title: "Pipelines", url: "/ado/pipelines", icon: Play },
+      { title: "Releases", url: "/ado/releases", icon: Rocket },
       { title: "Scan Reports", url: "/ado/reports", icon: ScanLine },
     ],
   },
