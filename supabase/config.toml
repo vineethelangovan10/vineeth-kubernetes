@@ -11,3 +11,6 @@ verify_jwt = false
 
 [functions.ado-scan]
 verify_jwt = false
+
+[functions.uptime-check]
+verify_jwt = false

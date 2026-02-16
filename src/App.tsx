@@ -30,6 +30,7 @@ import AdoRepositories from "@/pages/AdoRepositories";
 import AdoPipelines from "@/pages/AdoPipelines";
 import AdoScanReports from "@/pages/AdoScanReports";
 import AdoReleases from "@/pages/AdoReleases";
+import UptimeMonitoring from "@/pages/UptimeMonitoring";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -85,6 +86,7 @@ const App = () => (
             <Route path="/ado/pipelines" element={<ProtectedRoute><AdoPipelines /></ProtectedRoute>} />
             <Route path="/ado/releases" element={<ProtectedRoute><AdoReleases /></ProtectedRoute>} />
             <Route path="/ado/reports" element={<ProtectedRoute><AdoScanReports /></ProtectedRoute>} />
+            <Route path="/uptime" element={<ProtectedRoute><UptimeMonitoring /></ProtectedRoute>} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>

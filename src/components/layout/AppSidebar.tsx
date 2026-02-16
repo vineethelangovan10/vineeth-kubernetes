@@ -33,6 +33,7 @@ import {
   ScanLine,
   Play,
   Rocket,
+  Activity,
 } from "lucide-react";
 
 const navGroups = [
@@ -90,6 +91,12 @@ const navGroups = [
       { title: "Pipelines", url: "/ado/pipelines", icon: Play },
       { title: "Releases", url: "/ado/releases", icon: Rocket },
       { title: "Scan Reports", url: "/ado/reports", icon: ScanLine },
+    ],
+  },
+  {
+    label: "Uptime Monitoring",
+    items: [
+      { title: "Monitors", url: "/uptime", icon: Activity },
     ],
   },
 ];
