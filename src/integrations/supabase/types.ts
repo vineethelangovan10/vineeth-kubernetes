@@ -133,6 +133,179 @@ export type Database = {
         }
         Relationships: []
       }
+      monitor_checks: {
+        Row: {
+          checked_at: string
+          error_message: string | null
+          id: string
+          monitor_id: string
+          response_time_ms: number | null
+          status: string
+          status_code: number | null
+          tls_expiry_days: number | null
+        }
+        Insert: {
+          checked_at?: string
+          error_message?: string | null
+          id?: string
+          monitor_id: string
+          response_time_ms?: number | null
+          status: string
+          status_code?: number | null
+          tls_expiry_days?: number | null
+        }
+        Update: {
+          checked_at?: string
+          error_message?: string | null
+          id?: string
+          monitor_id?: string
+          response_time_ms?: number | null
+          status?: string
+          status_code?: number | null
+          tls_expiry_days?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "monitor_checks_monitor_id_fkey"
+            columns: ["monitor_id"]
+            isOneToOne: false
+            referencedRelation: "monitors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      monitors: {
+        Row: {
+          alert_channels: Json | null
+          alert_severity: string | null
+          auth_credentials: string | null
+          auth_type: string | null
+          business_hours: string | null
+          check_interval_seconds: number
+          consecutive_failures: number
+          consecutive_successes: number
+          created_at: string
+          current_status: string
+          custom_headers: Json | null
+          description: string | null
+          endpoint: string
+          environment: string
+          expected_body_match: string | null
+          expected_status_code: number | null
+          failure_threshold: number
+          http_method: string | null
+          id: string
+          is_active: boolean
+          last_checked_at: string | null
+          latency_critical_ms: number | null
+          latency_warning_ms: number | null
+          maintenance_end: string | null
+          maintenance_start: string | null
+          monitor_type: string
+          monitoring_region: string | null
+          name: string
+          notify_on: string[] | null
+          owner: string | null
+          port: number | null
+          recovery_threshold: number
+          request_path: string | null
+          retry_count: number
+          sla_target: number | null
+          tags: Json
+          timeout_seconds: number
+          tls_check_enabled: boolean | null
+          tls_expiry_alert_days: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          alert_channels?: Json | null
+          alert_severity?: string | null
+          auth_credentials?: string | null
+          auth_type?: string | null
+          business_hours?: string | null
+          check_interval_seconds?: number
+          consecutive_failures?: number
+          consecutive_successes?: number
+          created_at?: string
+          current_status?: string
+          custom_headers?: Json | null
+          description?: string | null
+          endpoint: string
+          environment?: string
+          expected_body_match?: string | null
+          expected_status_code?: number | null
+          failure_threshold?: number
+          http_method?: string | null
+          id?: string
+          is_active?: boolean
+          last_checked_at?: string | null
+          latency_critical_ms?: number | null
+          latency_warning_ms?: number | null
+          maintenance_end?: string | null
+          maintenance_start?: string | null
+          monitor_type?: string
+          monitoring_region?: string | null
+          name: string
+          notify_on?: string[] | null
+          owner?: string | null
+          port?: number | null
+          recovery_threshold?: number
+          request_path?: string | null
+          retry_count?: number
+          sla_target?: number | null
+          tags?: Json
+          timeout_seconds?: number
+          tls_check_enabled?: boolean | null
+          tls_expiry_alert_days?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          alert_channels?: Json | null
+          alert_severity?: string | null
+          auth_credentials?: string | null
+          auth_type?: string | null
+          business_hours?: string | null
+          check_interval_seconds?: number
+          consecutive_failures?: number
+          consecutive_successes?: number
+          created_at?: string
+          current_status?: string
+          custom_headers?: Json | null
+          description?: string | null
+          endpoint?: string
+          environment?: string
+          expected_body_match?: string | null
+          expected_status_code?: number | null
+          failure_threshold?: number
+          http_method?: string | null
+          id?: string
+          is_active?: boolean
+          last_checked_at?: string | null
+          latency_critical_ms?: number | null
+          latency_warning_ms?: number | null
+          maintenance_end?: string | null
+          maintenance_start?: string | null
+          monitor_type?: string
+          monitoring_region?: string | null
+          name?: string
+          notify_on?: string[] | null
+          owner?: string | null
+          port?: number | null
+          recovery_threshold?: number
+          request_path?: string | null
+          retry_count?: number
+          sla_target?: number | null
+          tags?: Json
+          timeout_seconds?: number
+          tls_check_enabled?: boolean | null
+          tls_expiry_alert_days?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
