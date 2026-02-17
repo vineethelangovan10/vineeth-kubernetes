@@ -14,3 +14,6 @@ verify_jwt = false
 
 [functions.uptime-check]
 verify_jwt = false
+
+[functions.vm-agent]
+verify_jwt = false
