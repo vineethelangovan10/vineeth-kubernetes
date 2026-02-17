@@ -34,6 +34,7 @@ import {
   Play,
   Rocket,
   Activity,
+  MonitorSmartphone,
 } from "lucide-react";
 
 const navGroups = [
@@ -97,6 +98,12 @@ const navGroups = [
     label: "Uptime Monitoring",
     items: [
       { title: "Monitors", url: "/uptime", icon: Activity },
+    ],
+  },
+  {
+    label: "Infrastructure",
+    items: [
+      { title: "VM Monitoring", url: "/vm-monitoring", icon: MonitorSmartphone },
     ],
   },
 ];

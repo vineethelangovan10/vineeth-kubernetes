@@ -330,6 +330,145 @@ export type Database = {
         }
         Relationships: []
       }
+      vm_agents: {
+        Row: {
+          agent_version: string | null
+          created_at: string
+          environment: string
+          hostname: string
+          id: string
+          ip_address: string | null
+          last_heartbeat_at: string | null
+          name: string
+          os_info: string | null
+          status: string
+          tags: Json
+          token: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          agent_version?: string | null
+          created_at?: string
+          environment?: string
+          hostname: string
+          id?: string
+          ip_address?: string | null
+          last_heartbeat_at?: string | null
+          name: string
+          os_info?: string | null
+          status?: string
+          tags?: Json
+          token?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          agent_version?: string | null
+          created_at?: string
+          environment?: string
+          hostname?: string
+          id?: string
+          ip_address?: string | null
+          last_heartbeat_at?: string | null
+          name?: string
+          os_info?: string | null
+          status?: string
+          tags?: Json
+          token?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      vm_alerts: {
+        Row: {
+          agent_id: string
+          condition: string
+          created_at: string
+          id: string
+          is_active: boolean
+          last_triggered_at: string | null
+          rule_name: string
+          severity: string
+          threshold: number
+          user_id: string
+        }
+        Insert: {
+          agent_id: string
+          condition: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          last_triggered_at?: string | null
+          rule_name: string
+          severity?: string
+          threshold: number
+          user_id: string
+        }
+        Update: {
+          agent_id?: string
+          condition?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          last_triggered_at?: string | null
+          rule_name?: string
+          severity?: string
+          threshold?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vm_alerts_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "vm_agents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      vm_metrics: {
+        Row: {
+          agent_id: string
+          category: string
+          collected_at: string
+          id: string
+          labels: Json
+          metric_name: string
+          metric_value: number
+          unit: string | null
+        }
+        Insert: {
+          agent_id: string
+          category?: string
+          collected_at?: string
+          id?: string
+          labels?: Json
+          metric_name: string
+          metric_value: number
+          unit?: string | null
+        }
+        Update: {
+          agent_id?: string
+          category?: string
+          collected_at?: string
+          id?: string
+          labels?: Json
+          metric_name?: string
+          metric_value?: number
+          unit?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vm_metrics_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "vm_agents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
